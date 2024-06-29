@@ -358,6 +358,13 @@ class YoutubeDL(object):
     _playlist_level = 0
     _playlist_urls = set()
     _screen_file = None
+    #jhm
+    _loggor = None
+
+    #jhm
+    @classmethod
+    def set_logger(cls, logger):
+        cls._loggor = logger
 
     def __init__(self, params=None, auto_init=True):
         """Create a FileDownloader object with the given options."""
@@ -375,6 +382,9 @@ class YoutubeDL(object):
             # Default parameters
             'nocheckcertificate': False,
         }
+        #jhm
+        if self._loggor:
+            self.params['logger'] = self._loggor
         self.params.update(params)
         self.cache = Cache(self)
 
