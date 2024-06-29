@@ -383,7 +383,7 @@ class YoutubeDL(object):
             # Default parameters
             'nocheckcertificate': False,
         }
-        # jhm
+        # <jhm>
         if self._logger:
             self.params['logger'] = self._logger
         # </jhm>
