@@ -10,7 +10,6 @@ import os
 import random
 import sys
 
-
 from .options import (
     parseOpts,
 )
@@ -44,6 +43,16 @@ from .extractor import gen_extractors, list_extractors
 from .extractor.adobepass import MSO_INFO
 from .YoutubeDL import YoutubeDL
 
+# <jhm>
+_do_sys_exit = True
+
+
+def set_do_sys_exit(value: bool):
+    global _do_sys_exit
+    _do_sys_exit = value
+
+
+# </jhm>
 
 def _real_main(argv=None):
     # Compatibility fix for Windows
@@ -112,7 +121,10 @@ def _real_main(argv=None):
             if desc is False:
                 continue
             if hasattr(ie, 'SEARCH_KEY'):
-                _SEARCHES = ('cute kittens', 'slithering pythons', 'falling cat', 'angry poodle', 'purple fish', 'running tortoise', 'sleeping bunny', 'burping cow')
+                _SEARCHES = (
+                    'cute kittens', 'slithering pythons', 'falling cat', 'angry poodle', 'purple fish',
+                    'running tortoise',
+                    'sleeping bunny', 'burping cow')
                 _COUNTS = ('', '5', '10', 'all')
                 desc += ' (Example: "%s%s:%s" )' % (ie.SEARCH_KEY, random.choice(_COUNTS), random.choice(_SEARCHES))
             write_string(desc + '\n', out=sys.stdout)
@@ -182,6 +194,7 @@ def _real_main(argv=None):
             except (TypeError, ValueError):
                 parser.error('invalid retry count specified')
         return parsed_retries
+
     if opts.retries is not None:
         opts.retries = parse_retries(opts.retries)
     if opts.fragment_retries is not None:
@@ -243,7 +256,8 @@ def _real_main(argv=None):
 
     any_getting = opts.geturl or opts.gettitle or opts.getid or opts.getthumbnail or opts.getdescription or opts.getfilename or opts.getformat or opts.getduration or opts.dumpjson or opts.dump_single_json
     any_printing = opts.print_json
-    download_archive_fn = expand_path(opts.download_archive) if opts.download_archive is not None else opts.download_archive
+    download_archive_fn = expand_path(
+        opts.download_archive) if opts.download_archive is not None else opts.download_archive
 
     # PostProcessors
     postprocessors = []
@@ -467,7 +481,12 @@ def _real_main(argv=None):
             ydl.to_screen('--max-download limit reached, aborting.')
             retcode = 101
 
-    sys.exit(retcode)
+    # <jhm>
+    if _do_sys_exit:
+        sys.exit(retcode)
+    else:
+        return retcode
+    # </jhm>
 
 
 def main(argv=None):
